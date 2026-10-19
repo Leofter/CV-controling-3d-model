@@ -1,8 +1,15 @@
-import { InteractionMode } from '../domain/InteractionMode.js';
+import { InteractionMode, VisualizationMode } from '../domain/InteractionMode.js';
 
 export class AppStateController {
   constructor() {
-    this.state = Object.freeze({ activeModel: null, interactionMode: InteractionMode.DRAG, isRunning: false, models: [] });
+    this.state = Object.freeze({
+      activeModel: null,
+      interactionMode: InteractionMode.DRAG,
+      visualizationMode: VisualizationMode.STUDIO,
+      sidebarCollapsed: false,
+      isRunning: false,
+      models: [],
+    });
     this.listeners = new Set();
   }
 
@@ -19,7 +26,14 @@ export class AppStateController {
 
   selectModel(model) { this._update({ activeModel: model }); }
   setMode(interactionMode) { this._update({ interactionMode }); }
-  setRunning(isRunning) { this._update({ isRunning }); }
+  setVisualizationMode(visualizationMode) { this._update({ visualizationMode }); }
+  setSidebarCollapsed(sidebarCollapsed) { this._update({ sidebarCollapsed }); }
+  setRunning(isRunning) {
+    this._update({
+      isRunning,
+      sidebarCollapsed: isRunning ? true : false,
+    });
+  }
 
   _update(patch) {
     this.state = Object.freeze({ ...this.state, ...patch });

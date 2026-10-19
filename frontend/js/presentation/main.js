@@ -12,7 +12,10 @@ import { ImageTo3DWizardView } from './views/ImageTo3DWizardView.js';
 
 const homeView = new HomeView(document.querySelector('#app'));
 const state = new AppStateController();
-const transformController = new TransformController();
+const sceneManager = new SceneManager(homeView.elements.scene);
+const transformController = new TransformController({
+  getWorldPlaneSize: (z) => sceneManager.getWorldPlaneSize(z),
+});
 let orchestrator;
 const handTracker = new HandTrackerService({ container: homeView.elements.camera, onGesture: (gesture) => orchestrator?.onGesture(gesture) });
 const voiceService = new VoiceCommandService({
@@ -21,7 +24,7 @@ const voiceService = new VoiceCommandService({
 });
 
 orchestrator = new PlaygroundOrchestrator({
-  state, sceneManager: new SceneManager(homeView.elements.scene), modelLoader: new ModelLoader(), transformController,
+  state, sceneManager, modelLoader: new ModelLoader(), transformController,
   handTracker, voiceService, backendClient: new AgroBackendClient(), homeView,
   libraryModal: new ModelLibraryModal(document.body), wizardView: new ImageTo3DWizardView(document.body),
 });

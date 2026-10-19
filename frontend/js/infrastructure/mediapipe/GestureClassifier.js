@@ -1,17 +1,29 @@
 export class GestureClassifier {
-  constructor(pinchThreshold = 0.065) { this.pinchThreshold = pinchThreshold; }
+  constructor(pinchThreshold = 0.07) {
+    this.pinchThreshold = pinchThreshold;
+  }
 
   classify(landmarks = []) {
     const hands = landmarks.map((points, index) => {
       const thumb = points[4];
       const indexTip = points[8];
       const wrist = points[0];
-      const distance = Math.hypot(thumb.x - indexTip.x, thumb.y - indexTip.y);
+      const dx = (thumb.rawX ?? thumb.x) - (indexTip.rawX ?? indexTip.x);
+      const dy = (thumb.rawY ?? thumb.y) - (indexTip.rawY ?? indexTip.y);
+      const distance = Math.hypot(dx, dy);
+      const screenThumbX = thumb.screenX ?? (1 - thumb.x);
+      const screenIndexX = indexTip.screenX ?? (1 - indexTip.x);
+      const screenThumbY = thumb.screenY ?? thumb.y;
+      const screenIndexY = indexTip.screenY ?? indexTip.y;
       return {
         id: index,
-        x: (thumb.x + indexTip.x) / 2,
-        y: (thumb.y + indexTip.y) / 2,
-        wrist,
+        x: (screenThumbX + screenIndexX) / 2,
+        y: (screenThumbY + screenIndexY) / 2,
+        wrist: {
+          x: wrist.screenX ?? (1 - wrist.x),
+          y: wrist.screenY ?? wrist.y,
+          z: wrist.z,
+        },
         pinchDistance: distance,
         isPinching: distance < this.pinchThreshold,
         landmarks: points,

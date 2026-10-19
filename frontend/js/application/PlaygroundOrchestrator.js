@@ -1,4 +1,4 @@
-import { InteractionMode, interactionModes } from '../domain/InteractionMode.js';
+import { InteractionMode, interactionModes, visualizationModes } from '../domain/InteractionMode.js';
 
 export class PlaygroundOrchestrator {
   constructor({ state, sceneManager, modelLoader, transformController, handTracker, voiceService, backendClient, homeView, libraryModal, wizardView }) {
@@ -9,9 +9,18 @@ export class PlaygroundOrchestrator {
   }
 
   async initialize() {
-    this.state.subscribe((state) => this.homeView.renderState(state));
+    this.state.subscribe((state) => {
+      this.homeView.renderState(state);
+      this.sceneManager.setVisualizationMode(state.visualizationMode);
+    });
     this.homeView.bind({
-      onLibrary: () => this.openLibrary(), onWizard: () => this.openWizard(), onRun: () => this.toggleRun(), onMode: (mode) => this.setMode(mode),
+      onLibrary: () => this.openLibrary(),
+      onWizard: () => this.openWizard(),
+      onRun: () => this.toggleRun(),
+      onMode: (mode) => this.setMode(mode),
+      onVisualization: (viewMode) => this.setVisualizationMode(viewMode),
+      onToggleSidebar: () => this.toggleSidebar(),
+      onResetTransform: () => this.resetTransform(),
     });
     try { await this.refreshModels(); }
     catch (error) { this.homeView.toast(`${error.message} Inicie o backend para acessar o catálogo.`, 'error'); }
@@ -57,10 +66,25 @@ export class PlaygroundOrchestrator {
     this.transformController.setMode(mode);
   }
 
+  setVisualizationMode(viewMode) {
+    if (!visualizationModes.includes(viewMode)) return;
+    this.state.setVisualizationMode(viewMode);
+  }
+
+  toggleSidebar() {
+    this.state.setSidebarCollapsed(!this.state.state.sidebarCollapsed);
+  }
+
+  resetTransform() {
+    this.transformController.resetTransform();
+    this.homeView.toast('Posição, rotação e escala do modelo centralizadas.');
+  }
+
   async toggleRun() {
     if (this.state.state.isRunning) return this.stop();
     if (!this.state.state.activeModel) return;
     this.state.setRunning(true);
+    this.sceneManager.setVisualizationMode(this.state.state.visualizationMode);
     this.sceneManager.start((delta) => this.transformController.update(delta));
     await this._loadActiveModel();
     try { await this.handTracker.start(); }
