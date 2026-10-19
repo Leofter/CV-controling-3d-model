@@ -1,0 +1,11 @@
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.30,<1.0
+python-multipart>=0.0.9
+pydantic>=2.7,<3.0
+Pillow>=10.3
+numpy>=1.26
+trimesh>=4.4
+pygltflib>=1.16
+rembg[cpu]>=2.0
+opencv-python-headless>=4.10
+requests>=2.32

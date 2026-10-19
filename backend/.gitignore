@@ -1,0 +1,10 @@
+__pycache__/
+.venv/
+storage/models/*
+!storage/models/.gitkeep
+storage/thumbnails/*
+!storage/thumbnails/.gitkeep
+storage/temp_uploads/*
+!storage/temp_uploads/.gitkeep
+storage/metadata/*
+!storage/metadata/.gitkeep

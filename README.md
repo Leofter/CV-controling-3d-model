@@ -1,4 +1,36 @@
-# 3D Model Playground
+# e-Agro 3D Studio
+
+Aplicação para catálogo, criação e manipulação por gestos de modelos agrícolas 3D. A implementação nova vive em `frontend/` e `backend/`; o playground original foi mantido na raiz como referência histórica.
+
+## Rodar localmente
+
+Use somente este comando na raiz do projeto:
+
+```bash
+./eagro.sh start
+```
+
+Ele cria o ambiente Python em `backend/.venv` quando necessário, instala as dependências na primeira execução, inicia FastAPI e serve o frontend pela mesma URL. Abra `http://127.0.0.1:8080`.
+
+Para encerrar completamente o programa e seu servidor:
+
+```bash
+./eagro.sh stop
+```
+
+Para consultar o estado: `./eagro.sh status`. Permita câmera e microfone quando o navegador solicitar. Por padrão, `EAGRO_GENERATOR=procedural`: o backend gera uma malha orgânica colorida baseada na imagem para testar todo o fluxo sem GPU, API externa ou chave. Para selecionar outro adapter, defina `EAGRO_GENERATOR=local` ou `cloud`; o último exige `EAGRO_3D_API_URL` e `EAGRO_3D_API_KEY`.
+
+## Estrutura
+
+- `backend/src/domain`: entidades e interfaces de negócio.
+- `backend/src/application`: casos de uso de listagem, upload e imagem-para-3D.
+- `backend/src/infrastructure`: Rembg/Pillow, geradores 3D, Trimesh e armazenamento local.
+- `backend/src/presentation`: API FastAPI e composição das dependências.
+- `frontend/js`: estado, orquestração, adaptadores Three.js/MediaPipe/voz/API e views.
+
+---
+
+# 3D Model Playground (referência original)
 
 Control 3D models using hand gestures and voice commands in real-time.
 
@@ -36,7 +68,7 @@ cd 3d-model-playground
 python -m http.server
 ```
 
-Then navigate to `http://localhost:8000` in your browser.
+Then navigate to `http://localhost:8080` in your browser.
 
 ## License
 
@@ -44,35 +76,4 @@ MIT License
 
 ## Credits
 
-- Three.js - https://threejs.org/
-- MediaPipe - https://mediapipe.dev/
-- Rosebud AI - https://rosebud.ai/
-- Quaternius 3D models - https://quaternius.com/
-
-## Related Projects
-
-I've released several computer vision projects (with code + tutorials) here:
-[Fun With Computer Vision](https://www.funwithcomputervision.com/)
-
-You can purchase lifetime access and receive the full project files and tutorials. I'm adding more content regularly :)
-
-You might also like some of my other open source projects:
-
-- [Particular Drift](https://collidingScopes.github.io/particular-drift) - Turn photos into flowing particle animations
-- [Liquid Logo](https://collidingScopes.github.io/liquid-logo) - Transform logos and icons into liquid metal animations
-- [Video-to-ASCII](https://collidingScopes.github.io/ascii) - Convert videos into ASCII pixel art
-
-## Contact
-
-- Instagram: [@stereo.drift](https://www.instagram.com/stereo.drift/)
-- Twitter/X: [@measure_plan](https://x.com/measure_plan)
-- Email: [stereodriftvisuals@gmail.com](mailto:stereodriftvisuals@gmail.com)
-- GitHub: [collidingScopes](https://github.com/collidingScopes)
-
-## Donations
-
-If you enjoyed this, feel free to buy me a coffee.
-
-My name is Alan, and I enjoy building open source software for computer vision, games, and more. This would be much appreciated during late-night coding sessions!
-
-[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png)](https://www.buymeacoffee.com/stereoDrift)
+https://github.com/collidingScopes/3d-model-playground
